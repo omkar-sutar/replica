@@ -4,6 +4,12 @@ from datetime import datetime
 import shutil
 import time
 
+def BACKUP_FOLDERS():
+    f=open("backup_config.json","r")
+    j=json.load(f)
+    f.close()
+    return j.get("backupfolders")
+
 def start_backup():
     pass
 def getLastBackupString():
@@ -52,9 +58,9 @@ def doBackup():
     new_backup_dir=os.path.join(getBackupPath(),datetime.now().strftime("20%y-%m-%d-%H-%M-%S"))
     os.makedirs(new_backup_dir)
     os.chdir(new_backup_dir)
-    tree=getDirectoryTree()
+    #tree=getDirectoryTree()
     f=open(os.path.join(new_backup_dir,"data.txt"),mode="w")
-    for folder in BACKUP_FOLDERS:
+    for folder in BACKUP_FOLDERS():
         if not os.path.exists(folder):
             continue
         dst=os.path.basename(os.path.normpath(folder))
@@ -78,11 +84,11 @@ def doRestore(backupString,remove_existing=False):
 
 def getDirectoryTree():
     tree=[]
-    for folder in BACKUP_FOLDERS:
+    for folder in BACKUP_FOLDERS():
         for dirpath,subdirectories,files in os.walk(top=folder,topdown=False):
             tree.append((dirpath,subdirectories,files))
     return tree
 
-# x=doBackup()
+#x=doBackup()
 # time.sleep(7)
 # doRestore(x)
