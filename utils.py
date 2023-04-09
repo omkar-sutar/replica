@@ -54,20 +54,24 @@ def getBackupSpaceUtilizationString():
     size_mb = total_size / (1024 * 1024)
     return str(round(size_mb,2))+" MB"
 
-def doBackup():
+def create_new_backup_dir():
     new_backup_dir=os.path.join(getBackupPath(),datetime.now().strftime("20%y-%m-%d-%H-%M-%S"))
     os.makedirs(new_backup_dir)
-    os.chdir(new_backup_dir)
-    #tree=getDirectoryTree()
+    return new_backup_dir
+
+def doBackup(new_backup_dir=None):
+    if new_backup_dir==None:
+        new_backup_dir=create_new_backup_dir() 
     f=open(os.path.join(new_backup_dir,"data.txt"),mode="w")
-    for folder in BACKUP_FOLDERS():
-        if not os.path.exists(folder):
+    for folder_path in BACKUP_FOLDERS():
+        if not os.path.exists(folder_path):
             continue
-        dst=os.path.basename(os.path.normpath(folder))
+        folder_name=os.path.basename(os.path.normpath(folder_path))
+        dst=os.path.join(new_backup_dir,folder_name)
         if not os.path.exists(dst):
             os.makedirs(dst)
-        shutil.copytree(folder,dst,dirs_exist_ok=True)
-        f.write(f"{folder},{os.path.join(new_backup_dir,dst)}\n")
+        shutil.copytree(folder_path,dst,dirs_exist_ok=True)
+        f.write(f"{folder_path},{dst}\n")
     f.close()
     return os.path.abspath(new_backup_dir)
 
@@ -90,5 +94,5 @@ def getDirectoryTree():
     return tree
 
 #x=doBackup()
-# time.sleep(7)
+#time.sleep(7)
 # doRestore(x)

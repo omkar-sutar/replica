@@ -1,13 +1,14 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog,ttk
 from config import *
 from utils import *
+import threading
 
 
 class Window(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("850x500")
+        self.geometry("850x550")
         self.title("Replica")
         self.place_frames()
 
@@ -33,7 +34,7 @@ class Window(tk.Tk):
 
     def fright_reset(self):
         self.fright.destroy()
-        self.fright = tk.Frame(master=self, height=500,
+        self.fright = tk.Frame(master=self, height=550,
                                width=650, background="white")
         self.fright.place(x=200, y=0)
 
@@ -73,6 +74,36 @@ class Window(tk.Tk):
             label="Delete", command=lambda: self.delete_line())
         self.text_area.bind("<Button-1>", self.show_context_menu)
 
+        self.backup_button=tk.Button(text="Start backup",command=lambda : self.start_backup())
+        self.backup_button.place(x=720,y=480)
+    def start_backup(self):
+        self.new_backup_dir=create_new_backup_dir()
+        self.backing_up_label=tk.Label(self.fright,text=f"Backing up at {self.new_backup_dir}",background="white")
+        self.backing_up_label.place(x=50,y=440)
+        self.start_pb()
+        self.backup_button.config(state="disabled")
+        self.callback_list=[False]
+        self.backup_thread=threading.Thread(target=doBackup,args=(self.new_backup_dir,))
+        self.backup_thread.start()
+        self.pb.after(200,self.post_backup)
+
+    def post_backup(self):
+        if self.backup_thread.is_alive():
+            self.pb.after(200,self.post_backup)
+            return
+        self.backup_button.config(state="normal")
+        self.backing_up_label.config(text=f"Backed up to {self.new_backup_dir}!")
+        self.stop_pb()
+    
+    def start_pb(self):
+        self.pb = ttk.Progressbar(self.fright,orient='horizontal',mode='indeterminate',length=350)
+        self.pb.place(x=50,y=480)
+        self.pb.start(20)
+    def stop_pb(self):
+        self.pb.stop()
+        self.pb.configure(mode='determinate')
+        self.pb.configure(value=100)
+
     def show_context_menu(self,event):
         # calculate the line number of the cursor position
         line_num = int(self.text_area.index("@%s,%s linestart" %
@@ -107,6 +138,7 @@ class Window(tk.Tk):
             self.text_area.delete("%d.0" % (i + 1), "%d.0 lineend" % (i + 1))
             self.text_area.insert("%d.0" % i, text)
         self.text_area.config(state="disabled")
+        
 
     def add_folder(self, text_area):
         self.text_area.config(state="normal")
