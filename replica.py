@@ -152,6 +152,7 @@ class Window(tk.Tk):
         self.text_area.config(state="disabled")
 
     def setscreen_restore(self):
+        self.fright.destroy()
         pass
 
 
