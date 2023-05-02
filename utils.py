@@ -84,7 +84,7 @@ def doRestore(backupString,remove_existing=False):
         if remove_existing:
             os.removedirs(dst)
         shutil.copytree(src,dst,dirs_exist_ok=True)
-
+    
 
 def getDirectoryTree():
     tree=[]
@@ -92,6 +92,9 @@ def getDirectoryTree():
         for dirpath,subdirectories,files in os.walk(top=folder,topdown=False):
             tree.append((dirpath,subdirectories,files))
     return tree
+
+def getButtonTheme():
+    return {"background":"#4287f5","foreground":"white"}
 
 #x=doBackup()
 #time.sleep(7)
