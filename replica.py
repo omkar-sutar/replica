@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog,ttk
-import tkinter.font as tkFont
 from config import *
 from utils import *
 import threading
@@ -70,39 +69,6 @@ class Window(tk.Tk):
             self.fright, text="Save changes", command=lambda: self.save_changes(self.text_area))
         self.delete_button.place(x=250, y=400)
 
-        GButton_746=tk.Button(self)
-        GButton_746["anchor"] = "nw"
-        GButton_746["bg"] = "#5ed7d9"
-        GButton_746["cursor"] = "arrow"
-        ft = tkFont.Font(family='Times',size=12)
-        GButton_746["font"] = ft
-        GButton_746["fg"] = "#ffffff"
-        GButton_746["justify"] = "center"
-        GButton_746["text"] = "Restore"
-        GButton_746.place(x=40,y=50,width=138,height=53)
-        #GButton_746["command"] = doRestore(x)
-
-        GButton_963=tk.Button(self)
-        GButton_963["bg"] = "#ebc154"
-        ft = tkFont.Font(family='Times',size=13)
-        GButton_963["font"] = ft
-        GButton_963["fg"] = "#000000"
-        GButton_963["justify"] = "center"
-        GButton_963["text"] = "Add Folder"
-        GButton_963.place(x=350,y=380,width=112,height=38)
-        GButton_963["command"] = self.add_folder(self.text_area)
-
-        GButton_387=tk.Button(self)
-        GButton_387["anchor"] = "center"
-        GButton_387["bg"] = "#28f15d"
-        ft = tkFont.Font(family='Times',size=13)
-        GButton_387["font"] = ft
-        GButton_387["fg"] = "#000000"
-        GButton_387["justify"] = "center"
-        GButton_387["text"] = "Save Changes"
-        GButton_387.place(x=500,y=380,width=112,height=37)
-        GButton_387["command"] = self.save_changes(self.text_area)
-        
         self.context_menu = tk.Menu(self.fright, tearoff=0)
         self.context_menu.add_command(
             label="Delete", command=lambda: self.delete_line())
